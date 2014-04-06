@@ -49,13 +49,16 @@ def close_db(error):
 @app.route('/index')
 def index():
 
-	db = get_db()
+    db = get_db()
 
-	#post = get()
+    cur = db.execute('select text from posts order by id desc')
+    posts = cur.fetchall()
+    try:
+        post = posts[0]
+    except:
+        post = "no posts yet :B"
 
-	post = "hi lol"
-
-	return render_template("index.html", post=post)
+    return render_template("index.html", post=post)
 	
 @app.route('/post', methods=['POST'])
 def post():

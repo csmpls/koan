@@ -16,38 +16,7 @@
 
 	</head>
 
-	<body>
-
-	{{ post }}
-
-	<p>
-
-	<input type="text" id="koan_submission">
-	<input type="submit" value="submit" class = "submit">
-
-
-	<script>
-
-		$('.submit').click(function() {
-
-				var submission = $('#koan_submission').val()
-
-				$.ajax({
-					type: "POST",
-					url: '/post',
-					contentType: 'application/json',
-     			 	dataType:'json',
-					data: JSON.stringify({submission:submission}),
-					success: function(data) {
-						console.log(data)
-						// empty submissoin field
-						$('#koan_submission').val('')
-					}
-				})
-			})
-
-	</script>
-	
+	{% include "body.html" %}	
 
 	</body>
 </html>
