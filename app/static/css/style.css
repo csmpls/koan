@@ -1,0 +1,19 @@
+body {
+	padding:7% 30%;
+	background: #111110;
+	color:#cccccf;
+}
+
+textarea {
+	background:#222221;
+	color:#eeeeef;
+	border:none;
+}
+
+#submitbutton {
+	float:right;
+}
+
+#post {
+	font-size:24pt;
+}
