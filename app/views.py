@@ -16,8 +16,6 @@ def index():
 @app.route('/post', methods=['POST'])
 def post():
 
-	post = request.json
+	post = request.json['submission']
 
-	print(post)
-
-	return jsonify(status="ok")
+	return jsonify(status="ok", post=post)

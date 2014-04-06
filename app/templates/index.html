@@ -37,7 +37,7 @@
 					url: '/post',
 					contentType: 'application/json',
      			 	dataType:'json',
-					data: {submission:submission},
+					data: JSON.stringify({submission:submission}),
 					success: function(data) {
 						console.log(data)
 					}
