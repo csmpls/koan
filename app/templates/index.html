@@ -40,6 +40,8 @@
 					data: JSON.stringify({submission:submission}),
 					success: function(data) {
 						console.log(data)
+						// empty submissoin field
+						$('#koan_submission').val('')
 					}
 				})
 			})
