@@ -110,4 +110,4 @@ def get():
 
 if __name__ == '__main__':
     init_db()
-    app.run()
+    app.run(host='128.32.226.246', port=6669)
