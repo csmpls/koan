@@ -4,6 +4,17 @@ import json, os
 
 app = Flask(__name__)
 
+
+
+
+
+
+
+
+
+
+# ----------------------- db shit
+
 # Load default config and override config from an environment variable
 app.config.update(dict(
     DATABASE=os.path.join(app.root_path, 'flaskr.db'),
@@ -44,11 +55,12 @@ def close_db(error):
         g.sqlite_db.close()
 
 
-# index controls (1) login (2) post display
-@app.route('/')
-@app.route('/index')
-def index():
 
+
+
+# --------------------------- helpers
+
+def get_newest_post():
     db = get_db()
 
     cur = db.execute('select text from posts order by id desc')
@@ -58,8 +70,24 @@ def index():
     except:
         post = "no posts yet :B"
 
+    return post
+
+
+
+
+
+
+# ---------------------------- routes
+
+@app.route('/')
+@app.route('/index')
+def index():
+
+    post = get_newest_post() 
+
     return render_template("index.html", post=post)
 	
+
 @app.route('/post', methods=['POST'])
 def post():
 
@@ -72,6 +100,13 @@ def post():
 
 	return jsonify(status="ok", post=post)
 
+
+@app.route('/get', methods=['GET'])
+def get():
+
+    post = get_newest_post()
+
+    return jsonify(post=post['text'])
 
 if __name__ == '__main__':
     init_db()

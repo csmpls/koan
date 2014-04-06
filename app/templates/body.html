@@ -1,35 +1,7 @@
-
-<body>
-
 <div id="post">{{ post.text|safe }}</div>
 
 <p>
 
-<input type="text" id="koan_submission">
+<textarea cols="40" rows="5" id="koan_submission"></textarea>
+<br>
 <input type="submit" value="submit" class = "submit">
-
-
-<script>
-
-	$('.submit').click(function() {
-
-			var submission = $('#koan_submission').val()
-
-			$.ajax({
-				type: "POST",
-				url: '/post',
-				contentType: 'application/json',
- 			 	dataType:'json',
-				data: JSON.stringify({submission:submission}),
-				success: function(data) {
-
-					// empty submission field
-					$('#koan_submission').val('')
-					
-					// post newest submission to page
-					$('#post').html(data.post)
-				}
-			})
-		})
-
-</script>
