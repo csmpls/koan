@@ -50,11 +50,11 @@ def close_db(error):
 
 def get_random_post():
     db = get_db()
-    rand = db.execute('select text from posts order by RANDOM() limit 1')
+    rand = db.execute('select text, id from posts order by RANDOM() limit 1')
     post = rand.fetchone()
 
-    if not post:
-        post = "no posts yet :B"
+    if post is None:
+        post = ("no posts yet :B",0)
 
     return post
 
@@ -69,10 +69,15 @@ def get_newest_post():
 
     return post
 
+def add_post(post):
+    db = get_db()
+    db.execute('insert into posts (text) values (?)', [post])
+    db.commit()
 
-
-
-
+def delete_post(id):
+    db = get_db()
+    db.execute('delete from posts where id = '+id)
+    db.commit()
 
 
 
@@ -88,29 +93,49 @@ def index():
 
     post = get_random_post() 
 
-    return render_template("index.html", post=post)
-	
-
-@app.route('/post', methods=['POST'])
-def post():
-
-    post = request.json['submission']
-
-    db = get_db()
-    db.execute('insert into posts (text) values (?)', [post])
-    db.commit()
-
-    post = get_random_post()[0]
-    
-    return jsonify(status="ok", post=post)
+    return render_template("index.html", post=post[0], id=post[1])
 
 
 @app.route('/get', methods=['GET'])
 def get():
 
-    post = get_newest_post()
+    post = get_random_post() 
 
-    return jsonify(post=post['text'])
+    return render_template("index.html", post=post[0], id=post[1])
+	
+
+@app.route('/post', methods=['POST'])
+def post():
+
+    post = request.json['payload']
+
+    add_post(post)
+
+    post = get_random_post() 
+
+    print(post)
+
+
+    return jsonify(status="ok", post=post[0], id=post[1])
+
+
+@app.route('/delete', methods=['POST'])
+def delete():
+
+    id = request.json['payload']
+
+    delete_post(id)
+
+    post = get_random_post() 
+
+    return jsonify(status="ok", post=post[0], id=post[1])
+
+
+
+
+
+
+
 
 if __name__ == '__main__':
     init_db()
