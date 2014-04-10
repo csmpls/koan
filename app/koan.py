@@ -5,19 +5,11 @@ import json, os
 app = Flask(__name__)
 
 
-
-
-
-
-
-
-
-
 # ----------------------- db shit
 
 # Load default config and override config from an environment variable
 app.config.update(dict(
-    DATABASE=os.path.join(app.root_path, 'flaskr.db'),
+    DATABASE=os.path.join(app.root_path, 'koan.db'),
     DEBUG=True,
     SECRET_KEY='development key',
 ))
@@ -54,23 +46,34 @@ def close_db(error):
     if hasattr(g, 'sqlite_db'):
         g.sqlite_db.close()
 
+# --------------------------- queries
 
+def get_random_post():
+    db = get_db()
+    rand = db.execute('select text from posts order by RANDOM() limit 1')
+    post = rand.fetchone()
 
+    if not post:
+        post = "no posts yet :B"
 
-
-# --------------------------- helpers
+    return post
 
 def get_newest_post():
     db = get_db()
 
     cur = db.execute('select text from posts order by id desc')
-    posts = cur.fetchall()
-    try:
-        post = posts[0]
-    except:
+    posts = cur.fetchone()
+
+    if not posts:
         post = "no posts yet :B"
 
     return post
+
+
+
+
+
+
 
 
 
@@ -83,7 +86,7 @@ def get_newest_post():
 @app.route('/index')
 def index():
 
-    post = get_newest_post() 
+    post = get_random_post() 
 
     return render_template("index.html", post=post)
 	
@@ -91,14 +94,15 @@ def index():
 @app.route('/post', methods=['POST'])
 def post():
 
-	post = request.json['submission']
+    post = request.json['submission']
 
-	db = get_db()
-	db.execute('insert into posts (text) values (?)', 
-		[post])
-	db.commit()
+    db = get_db()
+    db.execute('insert into posts (text) values (?)', [post])
+    db.commit()
 
-	return jsonify(status="ok", post=post)
+    post = get_random_post()[0]
+    
+    return jsonify(status="ok", post=post)
 
 
 @app.route('/get', methods=['GET'])
